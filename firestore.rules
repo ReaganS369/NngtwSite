@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function adminUser() {
+      return signedIn() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['owner', 'admin', 'editor'];
+    }
+
+    match /projects/{projectId} {
+      allow read: if true;
+      allow write: if adminUser();
+    }
+    match /news/{newsId} {
+      allow read: if resource.data.status == 'published' || adminUser();
+      allow write: if adminUser();
+    }
+    match /media/{mediaId} {
+      allow read: if true;
+      allow write: if adminUser();
+    }
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if adminUser();
+    }
+    match /users/{userId} {
+      allow read, write: if adminUser();
+    }
+  }
+}
