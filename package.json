@@ -1,0 +1,11 @@
+{
+  "name": "nngtw-studio-landing",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/preview.mjs",
+    "preview": "node scripts/preview.mjs",
+    "build": "node scripts/build.mjs"
+  }
+}
